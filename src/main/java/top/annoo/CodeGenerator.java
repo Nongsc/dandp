@@ -2,13 +2,15 @@ package top.annoo;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
-import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
-import com.baomidou.mybatisplus.generator.config.GlobalConfig;
-import com.baomidou.mybatisplus.generator.config.PackageConfig;
-import com.baomidou.mybatisplus.generator.config.StrategyConfig;
+import com.baomidou.mybatisplus.generator.config.*;
+import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CodeGenerator {
     public static void main(String[] args) {
@@ -20,7 +22,7 @@ public class CodeGenerator {
         GlobalConfig gc = new GlobalConfig();
         String projectPath = System.getProperty("user.dir");
         gc.setOutputDir(projectPath + "/src/main/java");
-        gc.setAuthor("nongshichao");
+        gc.setAuthor("NongShiChao");
         gc.setOpen(false); //生成后是否打开资源管理器
         gc.setFileOverride(false); //重新生成时文件是否覆盖
         gc.setServiceName("%sService"); //去掉Service接口的首字母I
@@ -49,13 +51,27 @@ public class CodeGenerator {
         pc.setMapper("mapper");
         mpg.setPackageInfo(pc);
 
+        String templatePath = "/templates/mapper.xml.vm";
+        // 自定义输出配置
+        List<FileOutConfig> focList = new ArrayList<>();
+        // 自定义配置会被优先输出
+        focList.add(new FileOutConfig(templatePath) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
+                return projectPath + "/src/main/resources/mapper/" + pc.getModuleName()
+                        + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+            }
+        });
+
         // 5、策略配置
         StrategyConfig strategy = new StrategyConfig();
-        strategy.setInclude("t_case");//对那一张表生成代码
-        strategy.setInclude("t_department");//对那一张表生成代码
-        strategy.setInclude("t_questions");//对那一张表生成代码
-        strategy.setInclude("t_registration");//对那一张表生成代码
-        strategy.setInclude("t_user");//对那一张表生成代码
+//        strategy.setInclude("t_case");//对那一张表生成代码
+//        strategy.setInclude("t_department");//对那一张表生成代码
+//        strategy.setInclude("t_questions");//对那一张表生成代码
+//        strategy.setInclude("t_registration");//对那一张表生成代码
+//        strategy.setInclude("t_user");//对那一张表生成代码
+        strategy.setTablePrefix("t_");
         strategy.setNaming(NamingStrategy.underline_to_camel);//数据库表映射到实体的命名策略
         strategy.setTablePrefix(pc.getModuleName() + "_"); //生成实体时去掉表前缀
 
