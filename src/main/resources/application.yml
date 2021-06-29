@@ -1,0 +1,10 @@
+server:
+  port: 6000
+  servlet:
+    context-path: /
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql:///dandp?serverTimezone=GMT&useSSL=false&charactEncoding=GMT+8
+    username: root
+    password: root
